@@ -1,0 +1,87 @@
+function sendEmail() {
+  var sheet = SpreadsheetApp.getActiveSpreadsheet().getActiveSheet();
+  var lastRow = sheet.getLastRow();
+  var headers = sheet.getRange(1, 1, 1, sheet.getLastColumn()).getValues()[0];
+  var rowData = sheet.getRange(lastRow, 1, 1, sheet.getLastColumn()).getValues()[0];
+  
+  var emailColumnIndex = headers.indexOf("כתובת אימייל");
+  var questionColumnIndex = headers.indexOf("שאלה ראשונה");
+  
+  var emailAddress = rowData[emailColumnIndex];
+  var question = rowData[questionColumnIndex];
+  
+  var subject = "Form Response";
+  var message = "Thank you for your response. Your answer to the question is: " + question;
+  
+  //MailApp.sendEmail(emailAddress, subject, message);
+
+
+
+  var spreadsheet = SpreadsheetApp.create("New Sheet"); // Create a new Google Sheet
+  var sheet = spreadsheet.getActiveSheet();
+
+
+  // Set up the table
+  sheet.getRange('A1:B6').setValues([
+    ['Category', 'Rating'],
+    ['Match', 3],
+    ['Science', 4],
+    ['Sport', 5],
+    ['Language', 4],
+    ['Computers', 2]
+  ]);
+  
+  // Create the radar chart
+  var chart = sheet.newChart()
+    .setChartType(Charts.ChartType.RADAR)
+    .addRange(sheet.getRange('A1:B6'))
+    .setPosition(6, 1, 0, 0)
+    .build();
+  
+  sheet.insertChart(chart);
+  
+  // Get the URL of the created spreadsheet
+  var spreadsheetUrl = spreadsheet.getUrl();
+
+  // Add specific users as editors of the spreadsheet
+  var editors = [emailAddress]; // Add more email addresses if needed
+  editors.forEach(function(editor) {
+    spreadsheet.addEditor(editor);
+  });
+  
+  // Send email with the link to the spreadsheet
+  var recipient = "grei12@gmail.com";
+  var subject = "Thank you for your response";
+  var body = "Here is your spreadsheet: " + spreadsheetUrl + "\n\nThank you for your response!";
+  MailApp.sendEmail(emailAddress, subject, body);
+}
+
+
+function showMessage() {
+  var sheetName = "Sheet Analysis";
+  var sheet = SpreadsheetApp.getActiveSpreadsheet().getSheetByName(sheetName);
+  var lastRow = sheet.getLastRow();
+  var range = sheet.getRange("E:E");
+  var values = range.getValues();
+  var value = "";
+
+  for (var i = lastRow; i >= 1; i--) {
+    if (values[i - 1][0] !== "") {
+      lastRow = i;
+      break;
+    }
+  }
+  value = sheet.getRange("E" + lastRow).getValue();
+
+  var message = "Hello, world!";
+  Browser.msgBox("Message", value, Browser.Buttons.OK);
+}
+
+
+
+
+
+
+
+
+
